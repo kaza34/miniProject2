@@ -178,3 +178,189 @@ if __name__ == "__main__":
         print(line)
 
     print(f"\n✅ Result saved to: {output_path}")
+# import os
+# import pandas as pd
+# import numpy as np
+#
+# # =========================
+# # 尝试导入 Ray
+# # =========================
+# USE_RAY = True
+#
+# try:
+#     import ray
+#     ray.init(
+#         ignore_reinit_error=True,
+#         include_dashboard=False,
+#         local_mode=False
+#     )
+# except Exception as e:
+#     print("⚠ay init failed, switching to multiprocessing mode...")
+#     print("Reason:", e)
+#     USE_RAY = False
+#
+# from multiprocessing import Pool
+#
+#
+# # =========================
+# # 读取数据
+# # =========================
+# def load_data(path):
+#     return pd.read_csv(path)
+#
+#
+# # =========================
+# # 分块
+# # =========================
+# def split_dataframe(df, n):
+#     return np.array_split(df, n)
+#
+#
+# # =========================
+# # Ray worker
+# # =========================
+# if USE_RAY:
+#
+#     @ray.remote
+#     def process_chunk(chunk):
+#         return process_logic(chunk)
+#
+#
+# # =========================
+# # multiprocessing / fallback worker
+# # =========================
+# def process_logic(chunk):
+#     result = {}
+#
+#     for _, row in chunk.iterrows():
+#
+#         service = row["service_name"]
+#
+#         if service not in result:
+#             result[service] = {
+#                 "total": 0,
+#                 "slow": 0,
+#                 "error": 0,
+#                 "timeout": 0
+#             }
+#
+#         result[service]["total"] += 1
+#
+#         text = str(row).lower()
+#
+#         if "slow" in text:
+#             result[service]["slow"] += 1
+#
+#         if "error" in text:
+#             result[service]["error"] += 1
+#
+#         if "timeout" in text:
+#             result[service]["timeout"] += 1
+#
+#     return result
+#
+#
+# # =========================
+# # merge results
+# # =========================
+# def merge(results_list):
+#     final = {}
+#
+#     for part in results_list:
+#         for service, s in part.items():
+#
+#             if service not in final:
+#                 final[service] = s
+#             else:
+#                 final[service]["total"] += s["total"]
+#                 final[service]["slow"] += s["slow"]
+#                 final[service]["error"] += s["error"]
+#                 final[service]["timeout"] += s["timeout"]
+#
+#     return final
+#
+#
+# # =========================
+# # 判定 degraded
+# # =========================
+# def detect(stats):
+#     output = []
+#
+#     for service, s in stats.items():
+#
+#         total = s["total"]
+#         slow_rate = s["slow"] / total if total else 0
+#         error_rate = s["error"] / total if total else 0
+#         timeout = s["timeout"]
+#
+#         reasons = []
+#
+#         if slow_rate > 0.20:
+#             reasons.append("high slow request rate")
+#
+#         if error_rate > 0.10:
+#             reasons.append("high server error rate")
+#
+#         if timeout >= 5:
+#             reasons.append("repeated timeout errors")
+#
+#         if reasons:
+#             output.append(f"{service},{' | '.join(reasons)}")
+#
+#     return output
+#
+#
+# # =========================
+# # 主程序
+# # =========================
+# if __name__ == "__main__":
+#
+#     base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+#
+#     input_path = os.path.join(
+#         base_dir,
+#         "data",
+#         "Comp3041J MiniProject 2 Dataset.csv"
+#     )
+#
+#     output_path = os.path.join(
+#         base_dir,
+#         "output",
+#         "task3_degraded_services.txt"
+#     )
+#
+#     df = load_data(input_path)
+#     chunks = split_dataframe(df, 4)
+#
+#     # =========================
+#     # Ray path
+#     # =========================
+#     if USE_RAY:
+#
+#         futures = [process_chunk.remote(c) for c in chunks]
+#         results = ray.get(futures)
+#
+#     # =========================
+#     # fallback multiprocessing
+#     # =========================
+#     else:
+#
+#         with Pool(processes=4) as pool:
+#             results = pool.map(process_logic, chunks)
+#
+#     # merge + detect
+#     merged = merge(results)
+#     degraded = detect(merged)
+#
+#     # output txt
+#     os.makedirs(os.path.dirname(output_path), exist_ok=True)
+#
+#     with open(output_path, "w", encoding="utf-8") as f:
+#         for line in degraded:
+#             f.write(line + "\n")
+#
+#     print("\n===== Degraded Services =====")
+#     for line in degraded:
+#         print(line)
+#
+#     print(f"\nSaved to: {output_path}")
