@@ -3,6 +3,9 @@
 import subprocess
 import sys
 from pathlib import Path
+import time
+import platform
+import os
 
 DATA_FILE = Path("data") / "Comp3041J MiniProject 2 Dataset.csv"
 MAPREDUCE_DIR = Path("mapreduce")
@@ -62,6 +65,8 @@ def main():
 
     # Create output directory
     ensure_output_dir()
+    
+    env_info = get_environment_info()
 
     # Run the three jobs sequentially, saving results to files only (no console output)
     for title, mapper, reducer, out_file in JOBS:
@@ -69,6 +74,8 @@ def main():
             result = run_mapreduce(mapper, reducer, DATA_FILE)
             output_path = OUTPUT_DIR / out_file
             with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(env_info)
+                f.write(f"\n=== {title} ===\n")
                 f.write(result if result else "(no output)")
         except Exception as e:
             # Write error information to the corresponding file if an exception occurs
@@ -78,6 +85,37 @@ def main():
 
     # Optional: print a simple completion message to the console
     # print("All results saved to output folder.")
+
+
+def get_environment_info():
+    info_lines = []
+    info_lines.append("=" * 60)
+    info_lines.append("MapReduce Job Execution Environment")
+    info_lines.append("=" * 60)
+    
+    info_lines.append(f"Run timestamp: {time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())}")
+    
+    info_lines.append(f"Operating System: {platform.system()} {platform.release()} ({platform.version()})")
+    info_lines.append(f"Machine: {platform.machine()}")
+
+    info_lines.append(f"Python version: {sys.version.replace(chr(10), ' ')}")
+    
+    info_lines.append(f"Working directory: {os.getcwd()}")
+    
+    info_lines.append(f"Dataset file: {DATA_FILE.absolute()}")
+    
+    relevant_env_vars = [
+        "JAVA_HOME", "HADOOP_HOME",
+        "RAY_raylet_start_wait_time_s", "RAY_ENABLE_WINDOWS_OR_OSX", "RAY_TEMP_DIR"
+    ]
+    info_lines.append("\n--- Relevant Environment Variables ---")
+    for var in relevant_env_vars:
+        value = os.environ.get(var, "(not set)")
+        info_lines.append(f"{var}: {value}")
+    
+    info_lines.append("=" * 60 + "\n")
+    return "\n".join(info_lines)
+
 
 if __name__ == "__main__":
     main()

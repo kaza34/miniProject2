@@ -1,3 +1,22 @@
+============================================================
+MapReduce Job Execution Environment
+============================================================
+Run timestamp: 2026-05-17 09:49:12
+Operating System: Windows 10 (10.0.26200)
+Machine: AMD64
+Python version: 3.10.11 (tags/v3.10.11:7d4cc5a, Apr  5 2023, 00:38:17) [MSC v.1929 64 bit (AMD64)]
+Working directory: E:\AcademicGarbage\Cloud\miniProject2
+Dataset file: E:\AcademicGarbage\Cloud\miniProject2\data\Comp3041J MiniProject 2 Dataset.csv
+
+--- Relevant Environment Variables ---
+JAVA_HOME: D:\Program Files\Java\jdk-17
+HADOOP_HOME: (not set)
+RAY_raylet_start_wait_time_s: (not set)
+RAY_ENABLE_WINDOWS_OR_OSX: (not set)
+RAY_TEMP_DIR: (not set)
+============================================================
+
+=== Output 2: Server Error Count (status=500) by Service ===
 auth-service	436
 notification-service	436
 order-service	717
