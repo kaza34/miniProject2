@@ -1,24 +1,4 @@
 #!/usr/bin/env python3
-# import sys
-#
-# current_service = None
-# current_count = 0
-#
-# for line in sys.stdin:
-#     service, count = line.strip().split("\t")
-#     count = int(count)
-#
-#     if current_service == service:
-#         current_count += count
-#     else:
-#         if current_service:
-#             print(f"{current_service}\t{current_count}")
-#
-#         current_service = service
-#         current_count = count
-#
-# if current_service:
-#     print(f"{current_service}\t{current_count}")
 import sys
 
 current_service = None

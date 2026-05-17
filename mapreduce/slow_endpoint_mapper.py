@@ -1,24 +1,5 @@
 #!/usr/bin/env python3
-# import sys
-#
-# for line in sys.stdin:
-#     line = line.strip()
-#
-#     if not line:
-#         continue
-#
-#     fields = line.split(",")
-#
-#     if fields[0] == "timestamp":
-#         continue
-#
-#     service = fields[3]
-#     endpoint = fields[4]
-#     response_time = int(fields[7])
-#
-#     if response_time > 800:
-#         key = f"{service},{endpoint}"
-#         print(f"{key}\t1")
+
 import sys
 
 first_line = True

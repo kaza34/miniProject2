@@ -1,18 +1,5 @@
 #!/usr/bin/env python3
-# import sys
-#
-# counts = {}
-#
-# for line in sys.stdin:
-#     key, count = line.strip().split("\t")
-#     count = int(count)
-#
-#     counts[key] = counts.get(key, 0) + count
-#
-# top10 = sorted(counts.items(), key=lambda x: x[1], reverse=True)[:10]
-#
-# for key, count in top10:
-#     print(f"{key}\t{count}")
+
 import sys
 from collections import defaultdict
 
